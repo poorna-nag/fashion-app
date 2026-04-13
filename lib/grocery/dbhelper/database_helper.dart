@@ -505,25 +505,27 @@ Future<List<Review>?> myReview(String userid) async {
   }
 }
 
-Future<List?> GroupPro(String userid) async {
+Future<List<GroupProducts>?> GroupPro(String userid) async {
   String link = "https://www.bigwelt.com/api/pg.php?id=" +
       userid +
       "&shop_id=" +
       GroceryAppConstant.Shop_id;
   print(link);
-  final response = await http.get(Uri.parse(link));
-  if (response.statusCode == 200) {
-    var responseData = json.decode(response.body);
-    List<dynamic> galleryArray = responseData;
-//    GroupProducts  groupProducts= GroupProducts.fromMap(json.decode(response.body));
-////    List<dynamic> galleryArray = responseData["data"]["reviews"];
-//    print(galleryArray.toString()+"Gallery");
-    if (galleryArray == null) {
-      return galleryArray;
-    } else {
+  try {
+    final response = await http.get(Uri.parse(link));
+    if (response.statusCode == 200) {
+      if (response.body.isEmpty || response.body == "null") return null;
+      var responseData = json.decode(response.body);
+      if (responseData == null || responseData is! List) {
+        return null;
+      }
+      List<dynamic> galleryArray = responseData;
       return GroupProducts.getListFromJson(galleryArray);
     }
+  } catch (e) {
+    print("Error in GroupPro: $e");
   }
+  return null;
 }
 
 Future<List<Products>?> searchval(String query) async {

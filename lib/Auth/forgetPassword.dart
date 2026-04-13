@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:royalmart/Auth/signin.dart';
@@ -279,6 +280,11 @@ class _SignInScreenState extends State<ForgetPassword> {
                           label: "Mobile Number",
                           icon: Icons.phone_android,
                           keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
                         ),
                         SizedBox(height: 32),
 
@@ -370,6 +376,8 @@ class _SignInScreenState extends State<ForgetPassword> {
     required String label,
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
+    int? maxLength,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -398,6 +406,8 @@ class _SignInScreenState extends State<ForgetPassword> {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
+        maxLength: maxLength,
+        inputFormatters: inputFormatters,
         style: TextStyle(
           fontSize: _large! ? 16 : (_medium! ? 14 : 12),
           color: Color(0xFF2D3748),
@@ -443,6 +453,7 @@ class _SignInScreenState extends State<ForgetPassword> {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
+          counterText: "", // Hide the character counter
         ),
       ),
     );

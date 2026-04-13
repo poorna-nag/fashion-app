@@ -19,6 +19,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 
 class AppDrawer extends StatefulWidget {
+  final Function(int)? onTabTap;
+  const AppDrawer({Key? key, this.onTabTap}) : super(key: key);
+
   @override
   _AppDrawerState createState() => _AppDrawerState();
 }
@@ -341,10 +344,15 @@ class _AppDrawerState extends State<AppDrawer> {
                   leading: Icon(Icons.home, color: Color(0xFFE91E63)),
                   title: Text('Home'),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => GroceryApp()),
-                    );
+                    Navigator.of(context).pop();
+                    if (widget.onTabTap != null) {
+                      widget.onTabTap!(0); // Home index
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => GroceryApp()),
+                      );
+                    }
                   },
                 ),
                 Divider(),
@@ -361,13 +369,18 @@ class _AppDrawerState extends State<AppDrawer> {
                           ),
                           title: Text("My Profile"),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfileView(
-                                        changeView: null,
-                                      )),
-                            );
+                            Navigator.of(context).pop();
+                            if (widget.onTabTap != null) {
+                              widget.onTabTap!(4); // Profile index
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileView(
+                                          changeView: null,
+                                        )),
+                              );
+                            }
                           }),
                     ),
                     Divider(),
@@ -549,14 +562,18 @@ class _AppDrawerState extends State<AppDrawer> {
                   onTap: () {
                     Navigator.of(context).pop();
                     if (GroceryAppConstant.isLogin) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WalltReport(
-                            ShowAppBar: true,
+                      if (widget.onTabTap != null) {
+                        widget.onTabTap!(2); // Wallet index
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WalltReport(
+                              ShowAppBar: true,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     } else {
                       Navigator.push(
                         context,

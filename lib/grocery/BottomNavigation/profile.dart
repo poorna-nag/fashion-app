@@ -7,6 +7,7 @@ import 'package:royalmart/General/AppConstant.dart';
 import 'package:royalmart/constent/app_constent.dart';
 import 'package:royalmart/dbhelper/CarrtDbhelper.dart' as food;
 import 'package:royalmart/grocery/General/AppConstant.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:royalmart/grocery/dbhelper/CarrtDbhelper.dart' as grocery;
 import 'package:royalmart/grocery/screen/MyReview.dart';
@@ -131,26 +132,56 @@ class _ProfileViewState extends State<ProfileView> {
                           radius: 60,
                           backgroundColor: GroceryAppColors.white,
                           child: ClipOval(
-                            child: new SizedBox(
-                              width: 120.0,
-                              height: 120.0,
-                              child: GroceryAppConstant.image == null
-                                  ? Image.asset(
-                                      'assets/images/logo.png',
-                                      fit: BoxFit.fill,
-                                    )
-                                  : GroceryAppConstant.image.length == 1
-                                      ? Image.asset('assets/images/logo.png',
-                                          fit: BoxFit.cover)
-                                      : GroceryAppConstant.image ==
-                                              "https://www.bigwelt.com/manage/uploads/customers/nopp.png"
-                                          ? Image.asset(
-                                              'assets/images/logo.png',
-                                            )
-                                          : Image.network(
-                                              GroceryAppConstant.image,
-                                              fit: BoxFit.fill),
-                            ),
+                            child: (GroceryAppConstant.image == null ||
+                                    GroceryAppConstant.image.isEmpty ||
+                                    GroceryAppConstant.image.length <= 1 ||
+                                    GroceryAppConstant.image ==
+                                        "https://www.bigwelt.com/manage/uploads/customers/nopp.png")
+                                ? Container(
+                                    color: Color(0xFFE91E63),
+                                    child: Center(
+                                      child: Text(
+                                        (GroceryAppConstant.name != null &&
+                                                GroceryAppConstant
+                                                        .name.length >
+                                                    1)
+                                            ? GroceryAppConstant.name[0]
+                                                .toUpperCase()
+                                            : "G",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 40,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: GroceryAppConstant.image,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator()),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      color: Color(0xFFE91E63),
+                                      child: Center(
+                                        child: Text(
+                                          (GroceryAppConstant.name != null &&
+                                                  GroceryAppConstant
+                                                          .name.length >
+                                                      1)
+                                              ? GroceryAppConstant.name[0]
+                                                  .toUpperCase()
+                                              : "G",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 40,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

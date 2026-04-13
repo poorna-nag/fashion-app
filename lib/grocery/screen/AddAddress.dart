@@ -154,55 +154,54 @@ class _HomePageState extends State<AddAddress> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 0,
                             children: [
-                              Expanded(
-                                child: RadioListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  value: 1,
-                                  groupValue: selectedRadio,
-                                  title: Text(
-                                    "Home",
-                                    style: TextStyle(fontSize: 16),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Radio(
+                                    value: 1,
+                                    groupValue: selectedRadio,
+                                    onChanged: (val) {
+                                      print("Radio $val");
+                                      setSelectRadio(val as int);
+                                    },
+                                    activeColor: Color(0xFFE91E63),
                                   ),
-                                  onChanged: (val) {
-                                    print("Radio $val");
-                                    setSelectRadio(val!);
-                                  },
-                                  activeColor: Color(0xFFE91E63),
-                                ),
+                                  Text("Home", style: TextStyle(fontSize: 14)),
+                                ],
                               ),
-                              Expanded(
-                                child: RadioListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  value: 2,
-                                  groupValue: selectedRadio,
-                                  title: Text(
-                                    "Profile",
-                                    style: TextStyle(fontSize: 16),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Radio(
+                                    value: 2,
+                                    groupValue: selectedRadio,
+                                    onChanged: (val) {
+                                      print("Radio $val");
+                                      setSelectRadio(val as int);
+                                    },
+                                    activeColor: Color(0xFFE91E63),
                                   ),
-                                  onChanged: (val) {
-                                    print("Radio $val");
-                                    setSelectRadio(val!);
-                                  },
-                                  activeColor: Color(0xFFE91E63),
-                                ),
+                                  Text("Office", style: TextStyle(fontSize: 14)),
+                                ],
                               ),
-                              Expanded(
-                                child: RadioListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  value: 3,
-                                  groupValue: selectedRadio,
-                                  title: Text(
-                                    "Others",
-                                    style: TextStyle(fontSize: 16),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Radio(
+                                    value: 3,
+                                    groupValue: selectedRadio,
+                                    onChanged: (val) {
+                                      print("Radio $val");
+                                      setSelectRadio(val as int);
+                                    },
+                                    activeColor: Color(0xFFE91E63),
                                   ),
-                                  onChanged: (val) {
-                                    print("Radio $val");
-                                    setSelectRadio(val!);
-                                  },
-                                  activeColor: Color(0xFFE91E63),
-                                ),
+                                  Text("Others", style: TextStyle(fontSize: 14)),
+                                ],
                               ),
                             ],
                           ),

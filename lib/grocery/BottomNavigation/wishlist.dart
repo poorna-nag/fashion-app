@@ -64,46 +64,43 @@ class WishlistState extends State<WishList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFf2f2f2),
-      body: Container(
+      backgroundColor: Color(0xFFF8F9FA),
+      body: SafeArea(
         child: Column(
           children: <Widget>[
             createHeader(),
             createSubTitle(),
+            SizedBox(height: 10),
             Expanded(
-                child: ListView.builder(
-              itemCount: prodctlist1 == null ? 0 : prodctlist1!.length,
+                child: prodctlist1 == null || prodctlist1!.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.shopping_bag_outlined, size: 80, color: Colors.grey.shade300),
+                            SizedBox(height: 16),
+                            Text("Your Cart is Empty", style: TextStyle(fontSize: 18, color: Colors.grey.shade500, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: prodctlist1!.length,
               itemBuilder: (BuildContext context, int index) {
                 ProductsCart item = prodctlist1![index];
-                var i = item.pQuantity;
 
                 return Dismissible(
                   key: Key(UniqueKey().toString()),
                   onDismissed: (direction) async {
                     SharedPreferences pref =
                         await SharedPreferences.getInstance();
-                    if (direction == DismissDirection.endToStart) {
+                    if (direction == DismissDirection.endToStart || direction == DismissDirection.startToEnd) {
                       dbmanager.deleteProducts(item.id!);
-
-                      // Then show a snackbar.
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(" Product is remove"),
-                          duration: Duration(seconds: 1)));
-                    } else {
-                      dbmanager.deleteProducts(item.id!);
-                      setState(() {
-//                        Constant.itemcount--;
-////                              Constant.totalAmount= Constant.totalAmount-double.parse(item.pprice);
-//                        Constant.carditemCount--;
-//                        cartItemcount(Constant.carditemCount);
-                      });
-
-                      // Then show a snackbar.
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(" Product is remove "),
+                          backgroundColor: Color(0xFFE91E63),
+                          content: Text("Product removed from cart"),
                           duration: Duration(seconds: 1)));
                     }
-                    // Remove the item from the data source.
                     setState(() {
                       prodctlist1!.removeAt(index);
                       GroceryAppConstant.totalAmount =
@@ -113,7 +110,6 @@ class WishlistState extends State<WishList> {
 
                       setState(() {
                         AppConstent.cc--;
-
                         pref.setInt("cc", AppConstent.cc);
                       });
 
@@ -122,350 +118,197 @@ class WishlistState extends State<WishList> {
                           GroceryAppConstant.groceryAppCartItemCount);
                     });
                   },
-                  // Show a red background as the item is swiped away.
                   background: Container(
-                    decoration: BoxDecoration(color: Colors.red),
-                    padding: EdgeInsets.all(5.0),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Icon(Icons.delete, color: Colors.white),
-                        ),
-                      ],
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFEBEE),
+                      borderRadius: BorderRadius.circular(16)
                     ),
+                    padding: EdgeInsets.all(20.0),
+                    alignment: Alignment.centerLeft,
+                    child: Icon(Icons.delete_outline, color: Color(0xFFE91E63), size: 30),
                   ),
                   secondaryBackground: Container(
-                    height: 100.0,
-                    decoration: BoxDecoration(color: Colors.red),
-                    padding: EdgeInsets.all(5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Icon(Icons.delete, color: Colors.white),
-                        ),
-                      ],
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFEBEE),
+                      borderRadius: BorderRadius.circular(16)
                     ),
+                    padding: EdgeInsets.all(20.0),
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.delete_outline, color: Color(0xFFE91E63), size: 30),
                   ),
-                  child: InkWell(
-                      onTap: () {
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(builder: (context) => ProductDetails()),
-//                );
-                      },
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            margin:
-                                EdgeInsets.only(left: 10, right: 10, top: 16),
-                            child: Card(
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                        right: 0, left: 4, top: 8, bottom: 8),
-                                    width: 110,
-                                    height: 130,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: GroceryAppColors.tela),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(14)),
-                                        color: Colors.blue.shade200,
-                                        image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(
-                                              GroceryAppConstant
-                                                      .Product_Imageurl +
-                                                  item.pimage!,
-                                            ))),
-                                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 15,
+                          offset: Offset(0, 5),
+                        )
+                      ]
+                    ),
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Color(0xFFF0F0F0),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(GroceryAppConstant.Product_Imageurl + item.pimage!),
+                            )
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                   Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            padding: EdgeInsets.only(
-                                                right: 8, top: 4),
-                                            child: Text(
-                                              item.pname == null
-                                                  ? 'name'
-                                                  : item.pname??"",
-                                              maxLines: 2,
-                                              softWrap: true,
-                                              style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black)
-                                                  .copyWith(fontSize: 14),
-                                            ),
-                                          ),
-                                          SizedBox(height: 6),
-                                          item.pcolor != null
-                                              ? item.pcolor!.length > 0
-                                                  ? Text(
-                                                      'COLOR ${item.pcolor}',
-                                                      style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color:
-                                                                  Colors.black)
-                                                          .copyWith(
-                                                              color:
-                                                                  Colors.grey,
-                                                              fontSize: 14),
-                                                    )
-                                                  : Row()
-                                              : Row(),
-                                          SizedBox(height: 6),
-                                          item.psize != null
-                                              ? item.psize!.length > 0
-                                                  ? Text(
-                                                      'Size ${item.psize}',
-                                                      style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color:
-                                                                  Colors.black)
-                                                          .copyWith(
-                                                              color:
-                                                                  Colors.grey,
-                                                              fontSize: 14),
-                                                    )
-                                                  : Row()
-                                              : Row(),
-                                          Container(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  item.pprice == null
-                                                      ? '100'
-                                                      : '\u{20B9} ${double.parse(item.pprice??"").toStringAsFixed(2)}',
-                                                  style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme.secondary,
-                                                    fontWeight: FontWeight.w700,
-                                                  ).copyWith(
-                                                      color: Colors.green),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: <Widget>[
-                                                      InkWell(
-                                                        onTap: () {
-                                                          if (prodctlist1![index]
-                                                                  .quantity !=
-                                                              1) {
-                                                            setState(() {
-                                                              String pvalue =
-                                                                  calDiscount1(
-                                                                      item.costPrice??"",
-                                                                      item.discount??"");
-                                                              double price =
-                                                                  double.parse(
-                                                                      pvalue);
-                                                              GroceryAppConstant
-                                                                      .totalAmount =
-                                                                  GroceryAppConstant
-                                                                          .totalAmount -
-                                                                      price;
-                                                              int quantity =
-                                                                  item.pQuantity!;
-                                                              int totalquantity =
-                                                                  quantity - 1;
-                                                              double
-                                                                  incrementprice =
-                                                                  (price *
-                                                                      totalquantity);
-                                                              prodctlist1![index]
-                                                                      .price =
-                                                                  incrementprice
-                                                                      .toString();
-                                                              prodctlist1![index]
-                                                                      .quantity =
-                                                                  totalquantity;
-                                                              dbmanager
-                                                                  .updateStudent(
-                                                                      item);
-                                                            });
-                                                          }
-                                                        },
-                                                        child: Icon(
-                                                          Icons.remove,
-                                                          size: 24,
-                                                          color: Colors
-                                                              .grey.shade700,
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        color: Colors
-                                                            .grey.shade200,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                bottom: 2,
-                                                                right: 12,
-                                                                left: 12),
-                                                        child: Text(item
-                                                                    .pQuantity ==
-                                                                null
-                                                            ? '1'
-                                                            : '${prodctlist1![index].quantity}'),
-                                                      ),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            String pvalue =
-                                                                calDiscount1(
-                                                                    item.costPrice??"",
-                                                                    item.discount??"");
-                                                            double price =
-                                                                double.parse(
-                                                                    pvalue);
-                                                            GroceryAppConstant
-                                                                    .totalAmount =
-                                                                GroceryAppConstant
-                                                                        .totalAmount +
-                                                                    price;
-
-                                                            int quantity =
-                                                                item.pQuantity!;
-                                                            if (quantity <=
-                                                                int.parse(prodctlist1![
-                                                                        index]
-                                                                    .totalQuantity??"")) {
-                                                              totalquantity =
-                                                                  quantity + 1;
-                                                            } else {
-                                                              showLongToast(
-                                                                  'Only  ${quantity}  products in stock ');
-                                                            }
-
-                                                            double
-                                                                incrementprice =
-                                                                (price *
-                                                                    totalquantity!);
-                                                            prodctlist1![index]
-                                                                    .price =
-                                                                incrementprice
-                                                                    .toString();
-                                                            prodctlist1![index]
-                                                                    .quantity =
-                                                                totalquantity!;
-                                                            dbmanager
-                                                                .updateStudent(
-                                                                    item);
-                                                          });
-                                                        },
-                                                        child: Icon(
-                                                          Icons.add,
-                                                          size: 24,
-                                                          color: Colors
-                                                              .grey.shade700,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
+                                    child: Text(
+                                      item.pname ?? "",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87
                                       ),
                                     ),
-                                    flex: 100,
+                                  ),
+                                  InkWell(
+                                    onTap: () async {
+                                      SharedPreferences pref = await SharedPreferences.getInstance();
+                                      setState(() {
+                                        dbmanager.deleteProducts(item.id!);
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            backgroundColor: Color(0xFFE91E63),
+                                            content: Text("Product removed"),
+                                            duration: Duration(seconds: 1)));
+                                        prodctlist1!.removeAt(index);
+                                        GroceryAppConstant.itemcount--;
+                                        GroceryAppConstant.carditemCount--;
+                                        GroceryAppConstant.totalAmount -= double.parse(item.pprice ?? "0");
+                                        if (GroceryAppConstant.groceryAppCartItemCount > 0) {
+                                          GroceryAppConstant.groceryAppCartItemCount--;
+                                        }
+                                        groceryCartItemCount(GroceryAppConstant.groceryAppCartItemCount);
+                                        setState(() {
+                                          AppConstent.cc--;
+                                          if (AppConstent.cc < 0) AppConstent.cc = 0;
+                                          pref.setInt("cc", AppConstent.cc);
+                                        });
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: Icon(Icons.close_rounded, color: Colors.grey.shade400, size: 20),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              if (item.pcolor != null && item.pcolor!.isNotEmpty)
+                                Text('Color: ${item.pcolor}', style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                              if (item.psize != null && item.psize!.isNotEmpty)
+                                Text('Size: ${item.psize}', style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                              SizedBox(height: 12),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    item.pprice == null ? '100' : '\u{20B9} ${double.parse(item.pprice!).toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      color: Color(0xFFE91E63),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF8F9FA),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: Colors.grey.shade200)
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        InkWell(
+                                          onTap: () {
+                                            if (prodctlist1![index].quantity != 1) {
+                                              setState(() {
+                                                String pvalue = calDiscount1(item.costPrice ?? "", item.discount ?? "");
+                                                double price = double.parse(pvalue);
+                                                GroceryAppConstant.totalAmount -= price;
+                                                int quantity = item.pQuantity!;
+                                                int totalquantity = quantity - 1;
+                                                double incrementprice = (price * totalquantity);
+                                                prodctlist1![index].price = incrementprice.toString();
+                                                prodctlist1![index].quantity = totalquantity;
+                                                dbmanager.updateStudent(item);
+                                              });
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            child: Icon(Icons.remove, size: 16, color: Colors.black87),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${item.pQuantity ?? 1}',
+                                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              String pvalue = calDiscount1(item.costPrice ?? "", item.discount ?? "");
+                                              double price = double.parse(pvalue);
+                                              GroceryAppConstant.totalAmount += price;
+                                              int quantity = item.pQuantity!;
+                                              int maxQty = item.totalQuantity != null && item.totalQuantity!.isNotEmpty ? int.parse(item.totalQuantity!) : 999;
+                                              if (quantity < maxQty) {
+                                                int totalquantity = quantity + 1;
+                                                double incrementprice = (price * totalquantity);
+                                                prodctlist1![index].price = incrementprice.toString();
+                                                prodctlist1![index].quantity = totalquantity;
+                                                dbmanager.updateStudent(item);
+                                              } else {
+                                                showLongToast('Only $maxQty products in stock');
+                                              }
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            child: Icon(Icons.add, size: 16, color: Colors.black87),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                              width: 24,
-                              height: 24,
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.only(right: 10, top: 8),
-                              child: InkWell(
-                                onTap: () async {
-                                  SharedPreferences pref =
-                                      await SharedPreferences.getInstance();
-                                  setState(() {
-                                    dbmanager.deleteProducts(item.id!);
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                        content: Text(" Product is remove"),
-                                        duration: Duration(seconds: 1)));
-                                    prodctlist1!.removeAt(index);
-                                    GroceryAppConstant.itemcount--;
-                                    GroceryAppConstant.carditemCount--;
-                                    GroceryAppConstant.totalAmount =
-                                        GroceryAppConstant.totalAmount -
-                                            double.parse(item.pprice??"");
-                                    GroceryAppConstant
-                                                .groceryAppCartItemCount <=
-                                            0
-                                        ? GroceryAppConstant
-                                            .groceryAppCartItemCount = 0
-                                        : GroceryAppConstant
-                                            .groceryAppCartItemCount--;
-
-                                    log(GroceryAppConstant
-                                        .groceryAppCartItemCount
-                                        .toString());
-                                    groceryCartItemCount(GroceryAppConstant
-                                        .groceryAppCartItemCount);
-
-                                    setState(() {
-                                      AppConstent.cc--;
-
-                                      if (AppConstent.cc == 0 ||
-                                          AppConstent.cc < 0) {
-                                        AppConstent.cc = 0;
-                                      }
-                                      log(AppConstent.cc.toString());
-
-                                      pref.setInt("cc", AppConstent.cc);
-                                    });
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(4)),
-                                  color: Colors.red),
-                            ),
-                          )
-                        ],
-                      )),
+                        )
+                      ],
+                    ),
+                  ),
                 );
               },
             )),
-            footer(context),
+            if (prodctlist1 != null && prodctlist1!.isNotEmpty)
+              footer(context),
           ],
         ),
       ),
@@ -474,6 +317,18 @@ class WishlistState extends State<WishList> {
 
   footer(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: Offset(0, -5),
+          )
+        ]
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -481,34 +336,29 @@ class WishlistState extends State<WishList> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 30),
-                child: Text(
-                  "Total",
-                  style: TextStyle(
-                          fontWeight: FontWeight.w400, color: Colors.black)
-                      .copyWith(color: Colors.black, fontSize: 12),
+              Text(
+                "Total Amount",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54,
+                  fontSize: 16
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(right: 30),
-                child: Text(
-                  '\u{20B9} ${GroceryAppConstant.totalAmount.toStringAsFixed(2)}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.greenAccent.shade700,
-                      fontSize: 14),
+              Text(
+                '\u{20B9} ${GroceryAppConstant.totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFE91E63),
+                  fontSize: 22
                 ),
               ),
             ],
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 20),
           Container(
-            height: 40,
-            width: 160,
+            width: double.infinity,
+            height: 55,
             child: ElevatedButton(
-              
-             
               onPressed: () {
                 if (GroceryAppConstant.itemcount > 0) {
                   Navigator.push(
@@ -519,49 +369,49 @@ class WishlistState extends State<WishList> {
                   showLongToast('Please add some products first!...');
                 }
               },
-             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 240, 55, 141),
-                  elevation: 0,
-                  shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-               textStyle:TextStyle(color:Colors.white, ) ,
-                padding: EdgeInsets.all(0.0),
-                ),
-          
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFE91E63),
+                elevation: 0,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                padding: EdgeInsets.zero,
+              ),
               child: Text(
-                "Buy Now",
-                style: TextStyle(color: Colors.white),
+                "Proceed to Checkout",
+                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5),
               ),
             ),
           ),
-          SizedBox(height: 8),
         ],
       ),
-      margin: EdgeInsets.only(top: 16),
     );
   }
 
   createHeader() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Text(
-        "SHOPPING CART",
-        style: CustomTextStyle.textFormFieldBold
-            .copyWith(fontSize: 16, color: Colors.black),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Shopping Cart",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+          ),
+        ],
       ),
-      margin: EdgeInsets.only(left: 12, top: 35),
     );
   }
 
   createSubTitle() {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Text(
-        'Total (${GroceryAppConstant.itemcount}) Items',
-        style: CustomTextStyle.textFormFieldBold
-            .copyWith(fontSize: 12, color: Colors.grey),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Text(
+            '${GroceryAppConstant.itemcount} Items in your cart',
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+          ),
+        ],
       ),
-      margin: EdgeInsets.only(left: 12, top: 4),
     );
   }
 

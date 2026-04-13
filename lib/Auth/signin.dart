@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:royalmart/Auth/forgetPassword.dart';
@@ -366,6 +367,11 @@ class _SignInScreenState extends State<SignInScreen> {
                           label: "Mobile Number",
                           icon: Icons.phone_outlined,
                           keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
                         ),
                         SizedBox(height: 24),
 
@@ -553,6 +559,8 @@ class _SignInScreenState extends State<SignInScreen> {
     required IconData icon,
     bool obscureText = false,
     TextInputType keyboardType = TextInputType.text,
+    int? maxLength,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -582,6 +590,8 @@ class _SignInScreenState extends State<SignInScreen> {
         controller: controller,
         obscureText: obscureText,
         keyboardType: keyboardType,
+        maxLength: maxLength,
+        inputFormatters: inputFormatters,
         style: TextStyle(
           fontSize: _large! ? 16 : (_medium! ? 14 : 12),
           color: Color(0xFF2D3748),
@@ -626,6 +636,7 @@ class _SignInScreenState extends State<SignInScreen> {
             borderSide: BorderSide.none,
           ),
           floatingLabelBehavior: FloatingLabelBehavior.auto,
+          counterText: "", // Hide the character counter
         ),
       ),
     );

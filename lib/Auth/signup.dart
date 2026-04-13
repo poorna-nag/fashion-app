@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
@@ -548,6 +549,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         label: "Mobile Number",
                         icon: Icons.phone_android,
                         keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                       ),
                       SizedBox(height: 20),
                       
@@ -746,6 +752,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     bool obscureText = false,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
+    int? maxLength,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -776,6 +784,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         obscureText: obscureText,
         keyboardType: keyboardType,
         maxLines: maxLines,
+        maxLength: maxLength,
+        inputFormatters: inputFormatters,
         style: TextStyle(
           fontSize: _large! ? 16 : (_medium! ? 14 : 12),
           color: Color(0xFF2D3748),
@@ -821,6 +831,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
+          counterText: "", // Hide the character counter
         ),
       ),
     );

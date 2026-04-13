@@ -80,28 +80,61 @@ class _TrackOrderState extends State<MyReview> {
         ),
         child: FutureBuilder(
             future: myReview(GroceryAppConstant.user_id),
-//          future: myReview("2345"),
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                print(snapshot.data!.length);
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasData) {
+                if (snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.star_border, size: 80, color: Colors.grey.shade400),
+                        SizedBox(height: 16),
+                        Text(
+                          "No reviews yet",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey.shade600,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Your submitted reviews will appear here.",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
                 return ListView.builder(
-                    itemCount: snapshot.data!.length == null
-                        ? 0
-                        : snapshot.data!.length,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
                       Review item = snapshot.data![index];
                       return Container(
-                        margin: EdgeInsets.only(
-                            left: 10, right: 10, top: 4, bottom: 4),
+                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4))),
+                        child: Material(
+                          color: Colors.transparent,
                           child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -110,137 +143,77 @@ class _TrackOrderState extends State<MyReview> {
                                         ProductDetails1(item.product!)),
                               );
                             },
-                            child: Container(
-                              padding: EdgeInsets.all(5.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  SizedBox(
-                                    height: 4,
-                                  ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        item.productName != null
-                                            ? item.productName ?? ""
-                                            : "",
-                                        overflow: TextOverflow.fade,
-                                        style: CustomTextStyle
-                                            .textFormFieldMedium
-                                            .copyWith(
-                                                fontSize: 18,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                          padding: EdgeInsets.only(top: 5),
-                                          child: RatingBar.builder(
-                                            initialRating:
-                                                double.parse(item.stars ?? ""),
-                                            minRating: 1,
-                                            direction: Axis.horizontal,
-                                            allowHalfRating: false,
-                                            itemCount: 5,
-                                            itemPadding: EdgeInsets.symmetric(
-                                                horizontal: 4.0),
-                                            itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                            onRatingUpdate: (rating) {
-                                              print(rating);
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                  ReadMoreText(
-                                    item.review ?? "",
-                                    colorClickableText: Color(0xFFE91E63),
-                                  ),
-//                                  Row(
-//                                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
-//                                    children: <Widget>[
-//                                      Expanded(
-//                                        child: Container(
-//                                          padding: EdgeInsets.only(top: 10),
-//                                          child: Text(item.review!=null?item.review:"",
-//                                            maxLines: line,
-//                                            overflow: TextOverflow.ellipsis,
-//                                            style: CustomTextStyle.textFormFieldSemiBold
-//                                                .copyWith(fontSize: 15, color: Colors.black54),
-//                                          ),
-//                                        ),
-//                                      ),
-//
-//                                    ],
-//                                  ),
-                                  /*  Row(
-                                    mainAxisAlignment:  MainAxisAlignment.end,
-
-                                    children: <Widget>[
-                                      RaisedButton(
-                                        onPressed: () {
-
-                                            if(flag){
-                                              setState(() {
-                                                line=15;
-                                                textval="Show less";
-                                                flag=false;
-                                              });
-
-                                            }
-                                            else{
-                                              setState(() {
-                                                line=2;
-                                                textval="Show more";
-                                                flag=true;
-                                              });
-
-                                            }
-
-
-                                        },
-                                        color: Color(0xFFE91E63),
-                                        padding: EdgeInsets.only( left: 20, right: 20),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(24))),
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
                                         child: Text(
-                                          textval,style: TextStyle(color: Colors.black),
-
-                                        ),
-                                      ),
-                                    ],
-                                  ),*/
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          item.dates ?? "",
-                                          style: CustomTextStyle
-                                              .textFormFieldSemiBold
-                                              .copyWith(
-                                                  fontSize: 15,
-                                                  color: Colors.black54),
+                                          item.productName ?? "Unknown Product",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 8,
+                                  SizedBox(height: 8),
+                                  RatingBar.builder(
+                                    initialRating: double.tryParse(item.stars ?? "0") ?? 0,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    ignoreGestures: true, // Read-only viewing Mode
+                                    itemCount: 5,
+                                    itemSize: 20,
+                                    itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    onRatingUpdate: (rating) {},
+                                  ),
+                                  if (item.review != null && item.review!.isNotEmpty) ...[
+                                    SizedBox(height: 12),
+                                    Container(
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade50,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.grey.shade200)
+                                      ),
+                                      child: ReadMoreText(
+                                        item.review!,
+                                        trimLines: 3,
+                                        colorClickableText: Color(0xFFE91E63),
+                                        trimMode: TrimMode.Line,
+                                        trimCollapsedText: ' Show more',
+                                        trimExpandedText: ' Show less',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade700,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  SizedBox(height: 12),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      item.dates ?? "",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade500,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -250,7 +223,7 @@ class _TrackOrderState extends State<MyReview> {
                       );
                     });
               } else {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: Text("Failed to load reviews"));
               }
             }),
       ),

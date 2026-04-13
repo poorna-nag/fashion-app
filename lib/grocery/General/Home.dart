@@ -373,7 +373,13 @@ class GroceryAppState extends State<GroceryApp> {
           ),
           child: Drawer(
             backgroundColor: Colors.transparent,
-            child: AppDrawer(),
+            child: AppDrawer(
+              onTabTap: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
           ),
         ),
         appBar: AppBar(

@@ -18,6 +18,35 @@ class DbProductManager {
 
   Future<int> insertStudent(ProductsCart products) async {
     await openDb();
+    
+    final List<Map<String, dynamic>> maps = await _database!.query('products',
+        where: "pid = ?", whereArgs: [products.pid]);
+        
+    for (var map in maps) {
+      String strColorA = (map['pcolor'] == null || map['pcolor'] == "null" || map['pcolor'].toString().trim().isEmpty) ? "" : map['pcolor'].toString().trim();
+      String strColorB = (products.pcolor == null || products.pcolor == "null" || products.pcolor!.trim().isEmpty) ? "" : products.pcolor!.trim();
+      
+      String strSizeA = (map['psize'] == null || map['psize'] == "null" || map['psize'].toString().trim().isEmpty) ? "" : map['psize'].toString().trim();
+      String strSizeB = (products.psize == null || products.psize == "null" || products.psize!.trim().isEmpty) ? "" : products.psize!.trim();
+      
+      String strVarA = (map['varient'] == null || map['varient'] == "null" || map['varient'].toString().trim().isEmpty) ? "" : map['varient'].toString().trim();
+      String strVarB = (products.varient == null || products.varient == "null" || products.varient!.trim().isEmpty) ? "" : products.varient!.trim();
+      
+      if (strColorA == strColorB && strSizeA == strSizeB && strVarA == strVarB) {
+         int existingQty = map['pQuantity'] ?? 0;
+         int addQty = products.pQuantity ?? 1;
+         products.pQuantity = existingQty + addQty;
+         
+         double singlePrice = double.tryParse(products.pprice ?? "0") ?? 0.0;
+         if (addQty > 0) singlePrice = singlePrice / addQty;
+         
+         products.pprice = (singlePrice * products.pQuantity!).toString();
+         products.id = map['id'];
+         
+         return await updateStudent(products);
+      }
+    }
+    
     return await _database!.insert('products', products.toMap());
   }
 

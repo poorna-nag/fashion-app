@@ -150,7 +150,7 @@ class ProductDetailsState extends State<ProductDetails> {
     bool? ligin = pref.getBool("isLogin");
 
     setState(() {
-      GroceryAppConstant.isLogin = ligin!;
+      GroceryAppConstant.isLogin = ligin ?? false;
 
       if (Count == null) {
         GroceryAppConstant.groceryAppCartItemCount = 0;
@@ -169,7 +169,7 @@ class ProductDetailsState extends State<ProductDetails> {
     gatinfoCount();
     productdetail(widget.plist.productIs ?? "").then((usersFromServe) {
       setState(() {
-        productdetails = usersFromServe!;
+        productdetails = usersFromServe ?? [];
         if (productdetails.length > 0) {
           setState(() {
             url = productdetails[0].img;
@@ -209,7 +209,7 @@ class ProductDetailsState extends State<ProductDetails> {
 
             GroupPro(productdetails[0].productIs ?? "").then((usersFromServe) {
               setState(() {
-                group = usersFromServe!.cast<GroupProducts>();
+                group = usersFromServe?.cast<GroupProducts>() ?? [];
                 group != null ? groupname = group![0].name : groupname = "";
               });
             });
@@ -233,7 +233,7 @@ class ProductDetailsState extends State<ProductDetails> {
     DatabaseHelper.getImage(widget.plist.productIs ?? "")
         .then((usersFromServe) {
       setState(() {
-        galiryImage1 = usersFromServe!;
+        galiryImage1 = usersFromServe ?? [];
         imgList1.clear();
         for (var i = 0; i < galiryImage1.length; i++) {
           imgList1.add(galiryImage1[i].img!);
@@ -243,7 +243,7 @@ class ProductDetailsState extends State<ProductDetails> {
 
     getPvarient(widget.plist.productIs ?? "").then((usersFromServe) {
       setState(() {
-        pvarlist = usersFromServe!;
+        pvarlist = usersFromServe ?? [];
       });
     });
   }
@@ -351,1713 +351,531 @@ class ProductDetailsState extends State<ProductDetails> {
         ],
       ),
       backgroundColor: Color(0xFFF8F9FA),
-      body: Container(
-        child: SafeArea(
-            top: false,
-            left: false,
-            right: false,
-            child: CustomScrollView(slivers: <Widget>[
+      bottomNavigationBar: productdetails.isNotEmpty 
+        ? _buildBottomAction(productdetails[0]) 
+        : null,
+      body: productdetails.isEmpty 
+        ? Center(child: CircularProgressIndicator(color: Color(0xFFE91E63)))
+        : CustomScrollView(
+            slivers: <Widget>[
               SliverList(
-                // Use a delegate to build items as they're scrolled on screen.
-                delegate: SliverChildBuilderDelegate(
-                  // The builder function returns a ListTile with a title that
-                  // displays the index of the current item.
-                  (context, index) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 10),
-                      imgList1.length > 0
-                          ? Container(
-                              margin: EdgeInsets.symmetric(horizontal: 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 3,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  height: 300,
-                                  child: PageView.builder(
-                                    itemCount: imgList1.length,
-                                    onPageChanged: (index) {
-                                      setState(() {
-                                        _current = index;
-                                      });
-                                    },
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ZoomImage(imgList1)),
-                                          );
-                                        },
-                                        child: Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.white,
-                                                Colors.grey.shade50,
-                                              ],
-                                            ),
-                                          ),
-                                          child: CachedNetworkImage(
-                                            fit: BoxFit.contain,
-                                            imageUrl: GroceryAppConstant
-                                                    .Product_Imageurl2 +
-                                                imgList1[index],
-                                            placeholder: (context, url) =>
-                                                Center(
-                                              child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  Color(0xFFE91E63),
-                                                ),
-                                              ),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.shade200,
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                              ),
-                                              child: Icon(
-                                                Icons.image_not_supported,
-                                                size: 50,
-                                                color: Colors.grey.shade400,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Container(
-                              height: 300,
-                              margin: EdgeInsets.symmetric(horizontal: 15),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  size: 80,
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                            ),
-                      // Image indicators
-                      imgList1.length > 1
-                          ? Container(
-                              margin: EdgeInsets.only(top: 15, bottom: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: imgList1.map<Widget>((url) {
-                                  int index = imgList1.indexOf(url);
-                                  return Container(
-                                    width: _current == index ? 25.0 : 8.0,
-                                    height: 8.0,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 4.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4.0),
-                                      color: _current == index
-                                          ? Color(0xFFE91E63)
-                                          : Colors.grey.shade300,
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            )
-                          : SizedBox(height: 10),
-                      // Product name with enhanced styling
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              spreadRadius: 1,
-                              blurRadius: 10,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              name.isNotEmpty
-                                  ? name
-                                  : productdetails.isNotEmpty
-                                      ? productdetails[0].productName ??
-                                          "Product Name"
-                                      : "Product Name",
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                                height: 1.3,
-                              ),
-                            ),
-                            SizedBox(height: 15),
-                            Row(
-                              children: <Widget>[
-                                // Original price with strikethrough
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.shade50,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    '\u{20B9} ${total ?? 0}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: Colors.red.shade600,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 12),
-                                // Sale price
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.green.shade500,
-                                        Colors.green.shade600
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.green.withOpacity(0.3),
-                                        spreadRadius: 1,
-                                        blurRadius: 4,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    '\u{20B9} ${totalmrp != null ? (totalmrp! * _count).toStringAsFixed(GroceryAppConstant.val) : "0"}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 12),
-                                // Discount badge
-                                if (total != null &&
-                                    totalmrp != null &&
-                                    total! > totalmrp!)
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.orange.shade100,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          color: Colors.orange.shade300),
-                                    ),
-                                    child: Text(
-                                      '${((total! - totalmrp!) / total! * 100).toStringAsFixed(0)}% OFF',
-                                      style: TextStyle(
-                                        color: Colors.orange.shade700,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      FutureBuilder(
-                          future: productdetail(widget.plist.productIs ?? ""),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                itemCount: snapshot.data!.length,
-                                shrinkWrap: true,
-                                primary: false,
-                                scrollDirection: Axis.vertical,
-                                itemBuilder: (BuildContext context, int index) {
-                                  Products item = snapshot.data![index];
-                                  return Container(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: map<Widget>(imgList1,
-                                              (index, url) {
-                                            return Container(
-                                              width: 25.0,
-                                              height: 0.0,
-                                              child: Container(),
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: 4.0,
-                                                  vertical: 7.0),
-//                                decoration: BoxDecoration(
-//                                  shape: BoxShape.rectangle,
-//                                  color: _current == index ? Colors.orange : Colors.grey,
-//                                ),
-                                            );
-                                          }),
-                                        ),
+                delegate: SliverChildListDelegate([
+                  _buildHeaderCarousel(),
+                  _buildProductInfo(),
+                  if ((productdetails[0].productColor != null && productdetails[0].productColor!.length > 2) || 
+                      (productdetails[0].productScale != null && productdetails[0].productScale!.length > 2))
+                    _buildVariantSection(productdetails[0]),
+                  _buildDescriptionSection(productdetails[0]),
+                  _buildRelatedItemsSection(),
+                  _buildRelatedProductsSection(),
+                  SizedBox(height: 50),
+                ]),
+              ),
+            ],
+          ),
+    );
+  }
 
-//                          productName1(),
-
-                                        // Enhanced variant selection container
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          padding: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.05),
-                                                spreadRadius: 1,
-                                                blurRadius: 10,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              if (item.productColor!.length >
-                                                      2 ||
-                                                  item.productScale!.length > 2)
-                                                Text(
-                                                  'Select Variants',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                              SizedBox(height: 15),
-                                              Row(
-                                                children: [
-                                                  // Color selection
-                                                  if (item.productColor!
-                                                          .length >
-                                                      2)
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            'Color',
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: Colors.grey
-                                                                  .shade700,
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 8),
-                                                          Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        12),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .grey.shade50,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12),
-                                                              border:
-                                                                  Border.all(
-                                                                color: _dropDownValue !=
-                                                                        null
-                                                                    ? GroceryAppColors
-                                                                        .tela
-                                                                        .withOpacity(
-                                                                            0.5)
-                                                                    : Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                width: 1.5,
-                                                              ),
-                                                            ),
-                                                            child:
-                                                                DropdownButtonHideUnderline(
-                                                              child:
-                                                                  DropdownButton<
-                                                                      String>(
-                                                                isExpanded:
-                                                                    true,
-                                                                hint: Text(
-                                                                  'Select Color',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade600,
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                                ),
-                                                                value:
-                                                                    _dropDownValue,
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .keyboard_arrow_down,
-                                                                  color:
-                                                                      GroceryAppColors
-                                                                          .tela,
-                                                                ),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                                items: color!
-                                                                    .map((val) {
-                                                                  return DropdownMenuItem<
-                                                                      String>(
-                                                                    value: val,
-                                                                    child: Text(
-                                                                        val),
-                                                                  );
-                                                                }).toList(),
-                                                                onChanged:
-                                                                    (val) {
-                                                                  setState(() {
-                                                                    _dropDownValue =
-                                                                        val;
-                                                                  });
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-
-                                                  if (item.productColor!
-                                                              .length >
-                                                          2 &&
-                                                      item.productScale!
-                                                              .length >
-                                                          2)
-                                                    SizedBox(width: 15),
-
-                                                  // Size selection
-                                                  if (item.productScale!
-                                                          .length >
-                                                      2)
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            'Size',
-                                                            style: TextStyle(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: Colors.grey
-                                                                  .shade700,
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 8),
-                                                          Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        12),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .grey.shade50,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12),
-                                                              border:
-                                                                  Border.all(
-                                                                color: _dropDownValue1 !=
-                                                                        null
-                                                                    ? GroceryAppColors
-                                                                        .tela
-                                                                        .withOpacity(
-                                                                            0.5)
-                                                                    : Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                width: 1.5,
-                                                              ),
-                                                            ),
-                                                            child:
-                                                                DropdownButtonHideUnderline(
-                                                              child:
-                                                                  DropdownButton<
-                                                                      String>(
-                                                                isExpanded:
-                                                                    true,
-                                                                hint: Text(
-                                                                  'Select Size',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade600,
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                                ),
-                                                                value:
-                                                                    _dropDownValue1,
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .keyboard_arrow_down,
-                                                                  color:
-                                                                      GroceryAppColors
-                                                                          .tela,
-                                                                ),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                                items: size!
-                                                                    .map((val) {
-                                                                  return DropdownMenuItem<
-                                                                      String>(
-                                                                    value: val,
-                                                                    child: Text(
-                                                                        val),
-                                                                  );
-                                                                }).toList(),
-                                                                onChanged:
-                                                                    (val) {
-                                                                  setState(() {
-                                                                    _dropDownValue1 =
-                                                                        val;
-                                                                  });
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        // SizedBox(height: 15,),
-
-                                        // Enhanced quantity and action buttons container
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 15),
-                                          padding: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.05),
-                                                spreadRadius: 1,
-                                                blurRadius: 10,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              // Quantity selector
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'Quantity',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                  Spacer(),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.grey.shade100,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25),
-                                                      border: Border.all(
-                                                          color: Colors
-                                                              .grey.shade300),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Material(
-                                                          color: Colors
-                                                              .transparent,
-                                                          child: InkWell(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            onTap: () {
-                                                              if (_count > 1) {
-                                                                setState(() {
-                                                                  _count--;
-                                                                });
-                                                              }
-                                                            },
-                                                            child: Container(
-                                                              width: 40,
-                                                              height: 40,
-                                                              child: Icon(
-                                                                Icons.remove,
-                                                                color: _count >
-                                                                        1
-                                                                    ? GroceryAppColors
-                                                                        .tela
-                                                                    : Colors
-                                                                        .grey,
-                                                                size: 20,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 50,
-                                                          child: Center(
-                                                            child: Text(
-                                                              '$_count',
-                                                              style: TextStyle(
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Colors
-                                                                    .black87,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Material(
-                                                          color: Colors
-                                                              .transparent,
-                                                          child: InkWell(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            onTap: () {
-                                                              if (_count <
-                                                                  int.parse(item
-                                                                          .quantityInStock ??
-                                                                      "1")) {
-                                                                setState(() {
-                                                                  _count++;
-                                                                });
-                                                              } else {
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  SnackBar(
-                                                                    content: Text(
-                                                                        "Product is not available"),
-                                                                    duration: Duration(
-                                                                        seconds:
-                                                                            1),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .red
-                                                                            .shade400,
-                                                                  ),
-                                                                );
-                                                              }
-                                                            },
-                                                            child: Container(
-                                                              width: 40,
-                                                              height: 40,
-                                                              child: Icon(
-                                                                Icons.add,
-                                                                color:
-                                                                    GroceryAppColors
-                                                                        .tela,
-                                                                size: 20,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 20),
-                                              // Action buttons row
-                                              Row(
-                                                children: [
-                                                  // Add to Cart button
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: Container(
-                                                      height: 50,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          if (GroceryAppConstant
-                                                              .isLogin) {
-                                                            // Same validation logic as before
-                                                            if (item.productColor!
-                                                                        .length >
-                                                                    0 &&
-                                                                item.productScale!
-                                                                        .length >
-                                                                    0) {
-                                                              if (_dropDownValue !=
-                                                                      null &&
-                                                                  _dropDownValue1 !=
-                                                                      null) {
-                                                                if (int.parse(
-                                                                        item.quantityInStock ??
-                                                                            "") >
-                                                                    0) {
-                                                                  _addToproducts(
-                                                                      context);
-                                                                  GroceryAppConstant
-                                                                      .groceryAppCartItemCount++;
-                                                                  groceryCartItemCount(
-                                                                      GroceryAppConstant
-                                                                          .groceryAppCartItemCount);
-                                                                  ScaffoldMessenger.of(
-                                                                          context)
-                                                                      .showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text(
-                                                                          "Product added to cart"),
-                                                                      duration: Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .green,
-                                                                    ),
-                                                                  );
-                                                                  setState(() {
-                                                                    GroceryAppConstant
-                                                                        .itemcount++;
-                                                                  });
-                                                                } else {
-                                                                  showLongToast(
-                                                                      "Product is out of stock");
-                                                                }
-                                                              } else {
-                                                                showLongToast(
-                                                                    "Please select color and size");
-                                                              }
-                                                            } else if (item
-                                                                    .productColor!
-                                                                    .length >
-                                                                2) {
-                                                              if (_dropDownValue !=
-                                                                  null) {
-                                                                if (int.parse(
-                                                                        item.quantityInStock ??
-                                                                            "") >
-                                                                    0) {
-                                                                  _addToproducts(
-                                                                      context);
-                                                                  GroceryAppConstant
-                                                                      .groceryAppCartItemCount++;
-                                                                  groceryCartItemCount(
-                                                                      GroceryAppConstant
-                                                                          .groceryAppCartItemCount);
-                                                                  ScaffoldMessenger.of(
-                                                                          context)
-                                                                      .showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text(
-                                                                          "Product added to cart"),
-                                                                      duration: Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .green,
-                                                                    ),
-                                                                  );
-                                                                  setState(() {
-                                                                    GroceryAppConstant
-                                                                        .itemcount++;
-                                                                  });
-                                                                } else {
-                                                                  showLongToast(
-                                                                      "Product is out of stock");
-                                                                }
-                                                              } else {
-                                                                showLongToast(
-                                                                    "Please select color");
-                                                              }
-                                                            } else if (item
-                                                                    .productScale!
-                                                                    .length >
-                                                                2) {
-                                                              if (_dropDownValue1 !=
-                                                                  null) {
-                                                                if (int.parse(
-                                                                        item.quantityInStock ??
-                                                                            "") >
-                                                                    0) {
-                                                                  _addToproducts(
-                                                                      context);
-                                                                  GroceryAppConstant
-                                                                      .groceryAppCartItemCount++;
-                                                                  groceryCartItemCount(
-                                                                      GroceryAppConstant
-                                                                          .groceryAppCartItemCount);
-                                                                  ScaffoldMessenger.of(
-                                                                          context)
-                                                                      .showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text(
-                                                                          "Product added to cart"),
-                                                                      duration: Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .green,
-                                                                    ),
-                                                                  );
-                                                                  setState(() {
-                                                                    GroceryAppConstant
-                                                                        .itemcount++;
-                                                                  });
-                                                                } else {
-                                                                  showLongToast(
-                                                                      "Product is out of stock");
-                                                                }
-                                                              } else {
-                                                                showLongToast(
-                                                                    "Please select size");
-                                                              }
-                                                            } else {
-                                                              if (int.parse(
-                                                                      item.quantityInStock ??
-                                                                          "") >
-                                                                  0) {
-                                                                _addToproducts(
-                                                                    context);
-                                                                GroceryAppConstant
-                                                                    .groceryAppCartItemCount++;
-                                                                groceryCartItemCount(
-                                                                    GroceryAppConstant
-                                                                        .groceryAppCartItemCount);
-                                                                ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                  SnackBar(
-                                                                    content: Text(
-                                                                        "Product added to cart"),
-                                                                    duration: Duration(
-                                                                        seconds:
-                                                                            1),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .green,
-                                                                  ),
-                                                                );
-                                                                setState(() {
-                                                                  GroceryAppConstant
-                                                                      .itemcount++;
-                                                                });
-                                                              } else {
-                                                                showLongToast(
-                                                                    "Product is out of stock");
-                                                              }
-                                                            }
-                                                          } else {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          SignInPage()),
-                                                            );
-                                                          }
-                                                        },
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                          backgroundColor:
-                                                              Color(0xFFE91E63),
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          elevation: 3,
-                                                          shadowColor: Color(
-                                                                  0xFFE91E63)
-                                                              .withOpacity(0.5),
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                          ),
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .shopping_bag_outlined,
-                                                                size: 20),
-                                                            SizedBox(width: 8),
-                                                            Text(
-                                                              "Add to Cart",
-                                                              style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 12),
-                                                  // Wishlist button
-                                                  Container(
-                                                    width: 50,
-                                                    height: 50,
-                                                    decoration: BoxDecoration(
-                                                      color: wishflag!
-                                                          ? Colors.grey.shade100
-                                                          : Colors.pink.shade50,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      border: Border.all(
-                                                        color: wishflag!
-                                                            ? Colors
-                                                                .grey.shade300
-                                                            : Colors
-                                                                .pink.shade200,
-                                                      ),
-                                                    ),
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: InkWell(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        onTap: () {
-                                                          if (GroceryAppConstant
-                                                              .isLogin) {
-                                                            if (wishflag!) {
-                                                              _addToproducts1(
-                                                                  context);
-                                                              showLongToast(
-                                                                  "Product added to wishlist");
-                                                              setState(() {
-                                                                wishflag =
-                                                                    false;
-                                                                GroceryAppConstant
-                                                                    .wishlist++;
-                                                                _countList(
-                                                                    GroceryAppConstant
-                                                                        .wishlist);
-                                                              });
-                                                            } else {
-                                                              setState(() {
-                                                                dbmanager1
-                                                                    .deleteProducts(
-                                                                        wishid!);
-                                                                wishflag = true;
-                                                              });
-                                                            }
-                                                          } else {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          SignInPage()),
-                                                            );
-                                                          }
-                                                        },
-                                                        child: Icon(
-                                                          wishflag!
-                                                              ? Icons
-                                                                  .favorite_border
-                                                              : Icons.favorite,
-                                                          color: wishflag!
-                                                              ? Colors
-                                                                  .grey.shade600
-                                                              : Colors.pink
-                                                                  .shade400,
-                                                          size: 24,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 12),
-                                                  // Share button
-                                                  Container(
-                                                    width: 50,
-                                                    height: 50,
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.blue.shade50,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      border: Border.all(
-                                                          color: Colors
-                                                              .blue.shade200),
-                                                    ),
-                                                    child: Material(
-                                                      color: Colors.transparent,
-                                                      child: InkWell(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            sharableProductName =
-                                                                name.replaceAll(
-                                                                    " ", "-");
-                                                            sharableProductName =
-                                                                sharableProductName
-                                                                    .replaceAll(
-                                                                        "(",
-                                                                        "");
-                                                            sharableProductName =
-                                                                sharableProductName
-                                                                    .replaceAll(
-                                                                        ")",
-                                                                        "");
-                                                            sharableProductId =
-                                                                item.productIs
-                                                                    .toString();
-                                                          });
-                                                          shareProduct(
-                                                            GroceryAppConstant
-                                                                    .Product_Imageurl +
-                                                                item.img!,
-                                                            item.productName ??
-                                                                "",
-                                                            GroceryAppConstant
-                                                                    .base_url +
-                                                                "${sharableProductName}_" +
-                                                                sharableProductId,
-                                                          );
-                                                        },
-                                                        child: Icon(
-                                                          Icons.share_outlined,
-                                                          color: Colors
-                                                              .blue.shade600,
-                                                          size: 24,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        // Enhanced variant selection section
-                                        pvarlist.length > 0
-                                            ? Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 10),
-                                                padding: EdgeInsets.all(20),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.05),
-                                                      spreadRadius: 1,
-                                                      blurRadius: 10,
-                                                      offset: Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.tune,
-                                                      color: Color(0xFFE91E63),
-                                                      size: 20,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    Text(
-                                                      'Variant:',
-                                                      style: TextStyle(
-                                                        color: Colors.black87,
-                                                        fontSize: 16.0,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 15),
-                                                    Expanded(
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          _displayDialog(
-                                                              context, index);
-                                                        },
-                                                        child: Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      15,
-                                                                  vertical: 12),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors
-                                                                .grey.shade50,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                            border: Border.all(
-                                                              color: Colors.grey
-                                                                  .shade300,
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  textval.length >
-                                                                          20
-                                                                      ? textval.substring(
-                                                                              0,
-                                                                              20) +
-                                                                          ".."
-                                                                      : textval,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: textval ==
-                                                                            "Select varient"
-                                                                        ? Colors
-                                                                            .grey
-                                                                            .shade600
-                                                                        : Colors
-                                                                            .black87,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Icon(
-                                                                Icons
-                                                                    .keyboard_arrow_down,
-                                                                color:
-                                                                    GroceryAppColors
-                                                                        .tela,
-                                                                size: 20,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            : SizedBox.shrink(),
-
-                                        SizedBox(height: 10),
-
-                                        // Enhanced product details section
-                                        Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.05),
-                                                spreadRadius: 1,
-                                                blurRadius: 10,
-                                                offset: Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    showdis = !showdis;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.all(20),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.info_outline,
-                                                        color: GroceryAppColors
-                                                            .tela,
-                                                        size: 20,
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text(
-                                                        'Product Details',
-                                                        style: TextStyle(
-                                                          color: Colors.black87,
-                                                          fontSize: 18.0,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      Spacer(),
-                                                      Icon(
-                                                        showdis
-                                                            ? Icons
-                                                                .keyboard_arrow_up
-                                                            : Icons
-                                                                .keyboard_arrow_down,
-                                                        color: GroceryAppColors
-                                                            .tela,
-                                                        size: 24,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              if (showdis)
-                                                Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      20, 0, 20, 20),
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        height: 1,
-                                                        color: Colors
-                                                            .grey.shade200,
-                                                        margin: EdgeInsets.only(
-                                                            bottom: 15),
-                                                      ),
-                                                      // Return policy
-                                                      _buildDetailRow(
-                                                        'Return Policy:',
-                                                        item.returns == "0"
-                                                            ? "No Returns"
-                                                            : "${item.returns} days",
-                                                        Icons.keyboard_return,
-                                                      ),
-                                                      SizedBox(height: 12),
-                                                      // Cancellation policy
-                                                      _buildDetailRow(
-                                                        'Cancellation:',
-                                                        item.cancels == "0"
-                                                            ? "No Cancellation"
-                                                            : "${item.cancels} days",
-                                                        Icons.cancel_outlined,
-                                                      ),
-                                                      SizedBox(height: 15),
-                                                      // Product description
-                                                      Container(
-                                                        width: double.infinity,
-                                                        padding:
-                                                            EdgeInsets.all(15),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors
-                                                              .grey.shade50,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(12),
-                                                        ),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .description_outlined,
-                                                                  color:
-                                                                      GroceryAppColors
-                                                                          .tela,
-                                                                  size: 18,
-                                                                ),
-                                                                SizedBox(
-                                                                    width: 8),
-                                                                Text(
-                                                                  'Description',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    fontSize:
-                                                                        16,
-                                                                    color: Colors
-                                                                        .black87,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            SizedBox(
-                                                                height: 10),
-                                                            Text(
-                                                              _parseHtmlString(item
-                                                                      .productDescription ??
-                                                                  "No description available"),
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade700,
-                                                                fontSize: 14,
-                                                                height: 1.5,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            } else {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                          }),
-                      // Enhanced Group Products Section
-                      group != null && group!.isNotEmpty
-                          ? Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.category_outlined,
-                                        color: Color(0xFFE91E63),
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        groupname ?? "Related Items",
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15),
-                                  Container(
-                                    height: 100.0,
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: group!.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return group![index].img!.length > 2
-                                              ? Container(
-                                                  width: 80.0,
-                                                  margin: EdgeInsets.only(
-                                                      right: 12),
-                                                  child: Material(
-                                                    elevation: 3,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                    child: InkWell(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ProductDetails1(
-                                                                      group![index]
-                                                                          .productIs!)),
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
-                                                          gradient:
-                                                              LinearGradient(
-                                                            begin: Alignment
-                                                                .topCenter,
-                                                            end: Alignment
-                                                                .bottomCenter,
-                                                            colors: [
-                                                              Colors.white,
-                                                              Colors
-                                                                  .grey.shade50,
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
-                                                          child:
-                                                              CachedNetworkImage(
-                                                            fit: BoxFit.contain,
-                                                            imageUrl:
-                                                                GroceryAppConstant
-                                                                        .Product_Imageurl1 +
-                                                                    group![index]
-                                                                        .img!,
-                                                            placeholder:
-                                                                (context,
-                                                                        url) =>
-                                                                    Center(
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                                valueColor:
-                                                                    AlwaysStoppedAnimation<
-                                                                        Color>(
-                                                                  GroceryAppColors
-                                                                      .tela,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            errorWidget:
-                                                                (context, url,
-                                                                        error) =>
-                                                                    Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade200,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15),
-                                                              ),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .image_not_supported,
-                                                                size: 30,
-                                                                color: Colors
-                                                                    .grey
-                                                                    .shade400,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox.shrink();
-                                        }),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : SizedBox.shrink(),
-                      // Enhanced Related Products Section
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.recommend_outlined,
-                                  color: Color(0xFFE91E63),
-                                  size: 20,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Related Products',
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Color(0xFFE91E63).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Color(0xFFE91E63).withOpacity(0.3),
-                                ),
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  print(catid.length);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Screen2(
-                                            catid.length > 0 ? catid[0] : "0",
-                                            "RELATED PRODUCTS")),
-                                  );
-                                },
-                                child: Text(
-                                  'View All',
-                                  style: TextStyle(
-                                    color: Color(0xFFE91E63),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 8.0),
-                        height: 280.0,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: products1.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                width: 160.0,
-                                margin: EdgeInsets.only(left: 15, right: 5),
-                                child: Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductDetails(
-                                                    products1[index])),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
-                                          height: 150,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.white,
-                                                Colors.grey.shade50,
-                                              ],
-                                            ),
-                                          ),
-                                          child: CachedNetworkImage(
-                                            fit: BoxFit.contain,
-                                            imageUrl: GroceryAppConstant
-                                                    .Product_Imageurl +
-                                                products1[index].img!,
-                                            placeholder: (context, url) =>
-                                                Center(
-                                              child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  Color(0xFFE91E63),
-                                                ),
-                                              ),
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.shade200,
-                                              ),
-                                              child: Icon(
-                                                Icons.image_not_supported,
-                                                size: 40,
-                                                color: Colors.grey.shade400,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            margin: EdgeInsets.all(12),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  products1[index].productName!,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 2,
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Colors.black87,
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.3,
-                                                  ),
-                                                ),
-                                                Spacer(),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      '₹${products1[index].buyPrice}',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 11,
-                                                        color:
-                                                            Colors.red.shade600,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 6),
-                                                    Expanded(
-                                                      child: Text(
-                                                        '₹${calDiscount(products1[index].buyPrice ?? "", products1[index].discount ?? "")}',
-                                                        style: TextStyle(
-                                                          color: Colors
-                                                              .green.shade600,
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          fontSize: 13,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
+  Widget _buildHeaderCarousel() {
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: Offset(0, 5))],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              height: 300,
+              color: Colors.white,
+              child: PageView.builder(
+                itemCount: imgList1.length,
+                onPageChanged: (index) => setState(() => _current = index),
+                itemBuilder: (context, index) => InkWell(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ZoomImage(imgList1))),
+                  child: CachedNetworkImage(
+                    imageUrl: GroceryAppConstant.Product_Imageurl2 + imgList1[index],
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => Center(child: CircularProgressIndicator(color: Color(0xFFE91E63))),
+                    errorWidget: (context, url, error) => Icon(Icons.error_outline, size: 50, color: Colors.grey),
                   ),
-                  childCount:
-                      1, // Fix: Prevent infinite loop by specifying single item
                 ),
               ),
-              SliverToBoxAdapter(
-                child: SizedBox(height: 30), // Bottom padding
+            ),
+          ),
+        ),
+        if (imgList1.length > 1)
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: imgList1.map((url) {
+                int index = imgList1.indexOf(url);
+                return Container(
+                  width: _current == index ? 24.0 : 8.0,
+                  height: 8.0,
+                  margin: EdgeInsets.symmetric(horizontal: 4.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4.0),
+                    color: _current == index ? Color(0xFFE91E63) : Colors.grey.shade300,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildProductInfo() {
+    Products item = productdetails[0];
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name.isNotEmpty ? name : item.productName ?? "",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+          ),
+          SizedBox(height: 12),
+          Row(
+            children: [
+              Text(
+                '₹${total ?? 0}',
+                style: TextStyle(fontSize: 16, color: Colors.red.shade400, decoration: TextDecoration.lineThrough),
               ),
-            ])),
+              SizedBox(width: 10),
+              Text(
+                '₹${totalmrp != null ? totalmrp!.toStringAsFixed(2) : "0"}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green.shade700),
+              ),
+              Spacer(),
+              if (total != null && totalmrp != null && total! > totalmrp!)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(color: Colors.orange.shade50, borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    '${((total! - totalmrp!) / total! * 100).toStringAsFixed(0)}% OFF',
+                    style: TextStyle(color: Colors.orange.shade800, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                ),
+            ],
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildRelatedItemsSection() {
+    if (group == null || group!.isEmpty) return SizedBox.shrink();
+    return Container(
+      margin: EdgeInsets.only(top: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(groupname ?? "Related Items", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          SizedBox(height: 15),
+          Container(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              itemCount: group!.length,
+              itemBuilder: (context, index) => Container(
+                width: 80,
+                margin: EdgeInsets.only(right: 12),
+                child: InkWell(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetails1(group![index].productIs!))),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: CachedNetworkImage(
+                        imageUrl: GroceryAppConstant.Product_Imageurl1 + group![index].img!,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRelatedProductsSection() {
+    return Container(
+      margin: EdgeInsets.only(top: 25),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("People Also Liked", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ElevatedButton(
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Screen2(catid.isNotEmpty ? catid[1] : "0", "RELATED"))),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFE91E63),
+                    foregroundColor: Colors.white,
+                    elevation: 1,
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  ),
+                  child: Text("VIEW ALL", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 250,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              itemCount: products1.length,
+              itemBuilder: (context, index) => Container(
+                width: 160,
+                margin: EdgeInsets.only(right: 15),
+                child: _buildRelatedCard(products1[index]),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRelatedCard(Products item) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: InkWell(
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetails(item))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                child: CachedNetworkImage(
+                  imageUrl: GroceryAppConstant.Product_Imageurl + item.img!,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.productName ?? "", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
+                  Text('₹${item.buyPrice}', style: TextStyle(color: Colors.green.shade700, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Sticky Bottom Action Bar
+  Widget _buildBottomAction(Products item) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 15, 20, 30),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: Offset(0, -5),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              // Quantity Selector
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  children: [
+                    _buildQtyBtn(Icons.remove, () {
+                      if (_count > 1) setState(() => _count--);
+                    }),
+                    Container(
+                      width: 40,
+                      child: Center(
+                        child: Text(
+                          '$_count',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    _buildQtyBtn(Icons.add, () {
+                      if (_count < int.parse(item.quantityInStock ?? "100")) setState(() => _count++);
+                    }),
+                  ],
+                ),
+              ),
+              SizedBox(width: 15),
+              // Price Display in Action Bar
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Total Price",
+                      style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                    ),
+                    Text(
+                      '\u{20B9} ${totalmrp != null ? (totalmrp! * _count).toStringAsFixed(GroceryAppConstant.val) : "0"}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            children: [
+              // Wishlist Button
+              _buildIconButton(
+                wishflag! ? Icons.favorite_border : Icons.favorite,
+                wishflag! ? Colors.grey.shade600 : Colors.pink.shade500,
+                wishflag! ? Colors.grey.shade100 : Colors.pink.shade50,
+                () {
+                  if (GroceryAppConstant.isLogin) {
+                    if (wishflag!) {
+                      _addToproducts1(context);
+                      showLongToast("Added to Wishlist");
+                      setState(() { wishflag = false; GroceryAppConstant.wishlist++; });
+                    } else {
+                      dbmanager1.deleteProducts(wishid!);
+                      setState(() => wishflag = true);
+                    }
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignInPage()));
+                  }
+                },
+              ),
+              SizedBox(width: 12),
+              // Add to Cart Button
+              Expanded(
+                child: Container(
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: () => _handleAddToCart(item),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFE91E63),
+                      foregroundColor: Colors.white,
+                      elevation: 5,
+                      shadowColor: Color(0xFFE91E63).withOpacity(0.4),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.shopping_bag_outlined),
+                        SizedBox(width: 10),
+                        Text("Add to Cart", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 12),
+              // Share Button
+              _buildIconButton(
+                Icons.share_outlined,
+                Colors.blue.shade600,
+                Colors.blue.shade50,
+                () {
+                   sharableProductName = (name.isEmpty ? item.productName! : name).replaceAll(" ", "-");
+                   shareProduct("", item.productName!, GroceryAppConstant.base_url + "${sharableProductName}_${item.productIs}");
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQtyBtn(IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Icon(icon, size: 20, color: Color(0xFFE91E63)),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, Color iconColor, Color bgColor, VoidCallback onTap) {
+    return Container(
+      width: 55,
+      height: 55,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: iconColor.withOpacity(0.2)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Icon(icon, color: iconColor),
+      ),
+    );
+  }
+
+  // Helper for variant section
+  Widget _buildVariantSection(Products item) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Personalize', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+          SizedBox(height: 15),
+          if (item.productColor!.length > 2)
+            _buildVariantPicker('Color', color!, _dropDownValue, (val) => setState(() => _dropDownValue = val)),
+          if (item.productColor!.length > 2 && item.productScale!.length > 2) SizedBox(height: 15),
+          if (item.productScale!.length > 2)
+            _buildVariantPicker('Size', size!, _dropDownValue1, (val) => setState(() => _dropDownValue1 = val)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVariantPicker(String label, List<String> items, String? value, Function(String?) onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 14, color: Colors.grey.shade600, fontWeight: FontWeight.w500)),
+        SizedBox(height: 8),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: value != null ? Color(0xFFE91E63).withOpacity(0.3) : Colors.grey.shade200, width: 1.5),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: value,
+              hint: Text('Select $label', style: TextStyle(fontSize: 14, color: Colors.grey.shade400)),
+              items: items.map((val) => DropdownMenuItem(value: val, child: Text(val))).toList(),
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDescriptionSection(Products item) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      child: ExpansionTile(
+        title: Text('Product Details', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        leading: Icon(Icons.info_outline, color: Color(0xFFE91E63)),
+        childrenPadding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+        children: [
+          Divider(),
+          _buildDetailRow('Returns', item.returns == "0" ? "No Returns" : "${item.returns} days", Icons.keyboard_return),
+          SizedBox(height: 12),
+          _buildDetailRow('Cancellation', item.cancels == "0" ? "No Cancellation" : "${item.cancels} days", Icons.cancel_outlined),
+          SizedBox(height: 20),
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(color: Colors.grey.shade50, borderRadius: BorderRadius.circular(15)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Description', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                SizedBox(height: 8),
+                Text(_parseHtmlString(item.productDescription ?? "No description"), style: TextStyle(color: Colors.grey.shade700, height: 1.5)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleAddToCart(Products item) async {
+    if (!GroceryAppConstant.isLogin) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SignInPage()));
+      return;
+    }
+    
+    // Validation
+    bool hasColor = item.productColor!.length > 2;
+    bool hasSize = item.productScale!.length > 2;
+    
+    if (hasColor && _dropDownValue == null) { showLongToast("Select Color"); return; }
+    if (hasSize && _dropDownValue1 == null) { showLongToast("Select Size"); return; }
+    
+    if (int.parse(item.quantityInStock ?? "0") <= 0) { showLongToast("Out of Stock"); return; }
+
+    bool isNew = await _addToproducts(context);
+    if (isNew) {
+      GroceryAppConstant.groceryAppCartItemCount++;
+      groceryCartItemCount(GroceryAppConstant.groceryAppCartItemCount);
+    }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Added to Cart"), backgroundColor: Colors.green));
   }
 
   productName1() {
@@ -2127,8 +945,32 @@ class ProductDetailsState extends State<ProductDetails> {
 //  String adminpricevalue;
 //  String costPrice;
 
-  void _addToproducts(BuildContext context) {
-    if (products == null) {
+  Future<bool> _addToproducts(BuildContext context) async {
+    List<ProductsCart> cartItems = await dbmanager.getProductList1(productdetails[0].productIs ?? "");
+    ProductsCart? existingProduct;
+    
+    bool _isEqual(String? a, String? b) {
+      String strA = (a == null || a == "null" || a.trim().isEmpty) ? "" : a.trim();
+      String strB = (b == null || b == "null" || b.trim().isEmpty) ? "" : b.trim();
+      return strA == strB;
+    }
+
+    // Check if variant matches
+    for (var item in cartItems) {
+      if (_isEqual(item.pcolor, _dropDownValue) && 
+          _isEqual(item.psize, _dropDownValue1) && 
+          _isEqual(item.varient, textval)) {
+         existingProduct = item;
+         break;
+      }
+    }
+
+    if (existingProduct != null) {
+      existingProduct.pQuantity = (existingProduct.pQuantity ?? 0) + _count;
+      existingProduct.pprice = (totalmrp! * existingProduct.pQuantity!).toString();
+      await dbmanager.updateStudent(existingProduct);
+      return false; // Not a new item
+    } else {
       ProductsCart st = new ProductsCart(
           pid: productdetails[0].productIs,
           pname: productdetails[0].productName,
@@ -2150,9 +992,8 @@ class ProductDetailsState extends State<ProductDetails> {
           varient: textval,
           mv: int.parse(productdetails[0].mv!),
           moq: '');
-      dbmanager
-          .insertStudent(st)
-          .then((id) => {print('Student Added to Db ${id}')});
+      dynamic id = await dbmanager.insertStudent(st);
+      return true; // New item inserted
     }
   }
 
@@ -2215,13 +1056,6 @@ class ProductDetailsState extends State<ProductDetails> {
     returnStr = discount.toStringAsFixed(2);
     print(returnStr);
     return returnStr;
-  }
-
-  void showLongToast(String s) {
-    Fluttertoast.showToast(
-      msg: s,
-      toastLength: Toast.LENGTH_LONG,
-    );
   }
 
   String _parseHtmlString(String htmlString) {

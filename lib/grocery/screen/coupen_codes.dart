@@ -74,162 +74,183 @@ class _CouponCodesState extends State<CouponCodes> {
         ),
         backgroundColor: Color(0xFFF8F9FA),
         body: isLoading
-            ? (Container(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ))
-            : Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(
-                          0xFFF8F9FA), // Light elegant background like sign-in page
-                      Color(0xFFFFE8F0), // Soft pink tint
-                      Color(0xFFF8F9FA),
-                    ],
-                    stops: [0.0, 0.5, 1.0],
-                  ),
-                ),
-                child: ListView.builder(
-                    itemCount:
-                        couponCodesList.isEmpty ? 0 : couponCodesList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Stack(
-                        children: [
-                          Container(
-                            margin:
-                                EdgeInsets.only(left: 10, top: 10, right: 10),
-                            width: MediaQuery.of(context).size.width,
-                            height: 120,
-                            child: Card(
-                              elevation: 5,
-                              shadowColor: Color(0xFFE91E63),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Row(
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    height: 90,
-                                    width: 90,
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: Card(
-                                      elevation: 5,
-                                      shadowColor: Color(0xFFE91E63),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Image.asset(
-                                              "assets/images/logo.png")),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Column(
-                                    children: [
-                                      SizedBox(height: 8),
-                                      Container(
-                                        width: 250,
-                                        child: Row(
-                                          children: [
-                                            Text("Coupon Code: "),
-                                            Text(
-                                              couponCodesList[index].code ?? "",
-                                              style: TextStyle(
-                                                  color: Color(0xFFE91E63),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Container(
-                                        width: 250,
-                                        child: Row(
-                                          children: [
-                                            Text("Max Discount: "),
-                                            Text(
-                                              "\u{20B9}${couponCodesList[index].maxVal}",
-                                              style: TextStyle(
-                                                  color: Color(0xFFE91E63),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Container(
-                                        width: 250,
-                                        child: Row(
-                                          children: [
-                                            Text("Min Order: "),
-                                            Text(
-                                              "\u{20B9}${couponCodesList[index].minVal}",
-                                              style: TextStyle(
-                                                  color: Color(0xFFE91E63),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Container(
-                                        width: 250,
-                                        child: Row(
-                                          children: [
-                                            Text("Expiry Date: "),
-                                            Text(
-                                              "${couponCodesList[index].xdate}",
-                                              style: TextStyle(
-                                                  color: Color(0xFFE91E63),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : couponCodesList.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.local_offer_outlined,
+                            size: 80, color: Colors.grey.shade400),
+                        SizedBox(height: 16),
+                        Text(
+                          "No coupons available yet",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey.shade600,
+                            fontWeight: FontWeight.w600,
                           ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                                margin: EdgeInsets.only(right: 15, top: 80),
-                                height: 50,
-                                width: 50,
-                                child: IconButton(
-                                  onPressed: () {
-                                    Clipboard.setData(ClipboardData(
-                                        text:
-                                            couponCodesList[index].code ?? ""));
-                                    showLongToast(
-                                        "Coupon code copied successfully...");
-                                  },
-                                  icon: Icon(
-                                    Icons.copy,
-                                    size: 30,
-                                    color: GroceryAppColors.sellp,
-                                  ),
-                                )),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Check back later for exciting offers!",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade500,
                           ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFFF8F9FA),
+                          Color(0xFFFFE8F0),
+                          Color(0xFFF8F9FA),
                         ],
-                      );
-                    }),
-              ));
+                        stops: [0.0, 0.5, 1.0],
+                      ),
+                    ),
+                    child: ListView.builder(
+                        itemCount: couponCodesList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: 10, top: 10, right: 10),
+                                width: MediaQuery.of(context).size.width,
+                                height: 120,
+                                child: Card(
+                                  elevation: 5,
+                                  shadowColor: Color(0xFFE91E63),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20)),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 90,
+                                        width: 90,
+                                        margin: EdgeInsets.only(left: 10),
+                                        child: Card(
+                                          elevation: 5,
+                                          shadowColor: Color(0xFFE91E63),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.asset(
+                                                  "assets/images/logo.png")),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: 250,
+                                            child: Row(
+                                              children: [
+                                                Text("Coupon Code: "),
+                                                Text(
+                                                  couponCodesList[index].code ?? "",
+                                                  style: TextStyle(
+                                                      color: Color(0xFFE91E63),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Container(
+                                            width: 250,
+                                            child: Row(
+                                              children: [
+                                                Text("Max Discount: "),
+                                                Text(
+                                                  "\u{20B9}${couponCodesList[index].maxVal}",
+                                                  style: TextStyle(
+                                                      color: Color(0xFFE91E63),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Container(
+                                            width: 250,
+                                            child: Row(
+                                              children: [
+                                                Text("Min Order: "),
+                                                Text(
+                                                  "\u{20B9}${couponCodesList[index].minVal}",
+                                                  style: TextStyle(
+                                                      color: Color(0xFFE91E63),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Container(
+                                            width: 250,
+                                            child: Row(
+                                              children: [
+                                                Text("Expiry Date: "),
+                                                Text(
+                                                  "${couponCodesList[index].xdate}",
+                                                  style: TextStyle(
+                                                      color: Color(0xFFE91E63),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Container(
+                                    margin: EdgeInsets.only(
+                                        right: 15, top: 80),
+                                    height: 50,
+                                    width: 50,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        Clipboard.setData(ClipboardData(
+                                            text: couponCodesList[index]
+                                                    .code ??
+                                                ""));
+                                        showLongToast(
+                                            "Coupon code copied successfully...");
+                                      },
+                                      icon: Icon(
+                                        Icons.copy,
+                                        size: 30,
+                                        color: GroceryAppColors.sellp,
+                                      ),
+                                    )),
+                              ),
+                            ],
+                          );
+                        }),
+                  ));
   }
 }

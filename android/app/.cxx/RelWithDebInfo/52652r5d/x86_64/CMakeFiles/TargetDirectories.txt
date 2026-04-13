@@ -1,0 +1,2 @@
+D:/bigwelt/fashion/fashion/android/app/.cxx/RelWithDebInfo/52652r5d/x86_64/CMakeFiles/edit_cache.dir
+D:/bigwelt/fashion/fashion/android/app/.cxx/RelWithDebInfo/52652r5d/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "320255817949",
+    "project_id": "fashion-13354",
+    "storage_bucket": "fashion-13354.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320255817949:android:9358ab5858996517bac334",
+        "android_client_info": {
+          "package_name": "com.fashionbigweltdemoapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkGn1HVpuIzr5bv0McnhxWV2Y3yoTVWlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

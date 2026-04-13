@@ -1,0 +1,37 @@
+buildscript {
+    // You can keep ext.kotlin_version if AGP 8.4.0 is compatible with 1.9.22
+    // Or update it if AGP 8.4.0 requires a newer Kotlin.
+    // For AGP 8.4.0, Kotlin 1.9.22 should generally be fine.
+    ext.kotlin_version = '1.9.22'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.google.gms:google-services:4.4.2'
+        classpath 'com.android.tools.build:gradle:8.7.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // It's good practice to also add jitpack if any of your dependencies might come from there
+        // maven { url 'https://jitpack.io' }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

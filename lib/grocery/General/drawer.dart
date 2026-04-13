@@ -8,11 +8,11 @@ import 'package:royalmart/grocery/BottomNavigation/profile.dart';
 import 'package:royalmart/grocery/General/AppConstant.dart';
 import 'package:royalmart/grocery/General/Home.dart';
 import 'package:royalmart/grocery/Web/WebviewTermandCondition.dart';
-import 'package:royalmart/grocery/Web/webview_team_and_prospect.dart';
+
 import 'package:royalmart/grocery/dbhelper/database_helper.dart';
 import 'package:royalmart/grocery/screen/ShowAddress.dart';
 import 'package:royalmart/grocery/screen/myorder.dart';
-import 'package:royalmart/grocery/screen/transaction_pin.dart';
+
 import 'package:royalmart/screen/wallecttransation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -584,90 +584,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     }
                   },
                 ),
-                Divider(),
-                ListTile(
-                  leading: Icon(
-                    Icons.pin,
-                    color: Color(0xFFE91E63),
-                  ),
-                  title: Text('Transaction Password'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    if (GroceryAppConstant.isLogin) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TransactionPin(),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignInPage(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                Divider(),
-                ListTile(
-                  leading: Icon(
-                    Icons.money_sharp,
-                    color: Color(0xFFE91E63),
-                  ),
-                  title: Text('My Earnings'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    if (GroceryAppConstant.isLogin) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WebViewClass(
-                            "My Earnings",
-                            "${GroceryAppConstant.base_url}Api_earnings.php?username=$mobile&shop_id=${GroceryAppConstant.Shop_id}",
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignInPage(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                Divider(),
-                ListTile(
-                  leading: Icon(
-                    Icons.send_to_mobile_sharp,
-                    color: Color(0xFFE91E63),
-                  ),
-                  title: Text('My Team'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    if (GroceryAppConstant.isLogin) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WebViewClassTeam(
-                            "My Team",
-                            "${GroceryAppConstant.base_url}Api_earnings.php?username=$mobile&shop_id=${GroceryAppConstant.Shop_id}",
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignInPage(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.phone, color: Color(0xFFE91E63)),
